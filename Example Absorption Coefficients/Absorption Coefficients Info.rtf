@@ -1,0 +1,103 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs20 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+Absorption Coefficients:\
+\
+% wall absorption coefficients alpha:\
+% [x1,1 x2,1 y1,1 y2,1 z1,1 z2,1\
+%  x1,2 x2,2 y1,2 y2,2 z1,2 z2,2]\
+%    .    .    .    .    .    .\
+%  x1,K x2,K y1,K y2,K z1,K z2,K]\
+% where x, y, z denote walls with constant x, y, z coordinates, the first\
+% index denotes the wall position (1 being closer to the origin of\
+% coordinates) and the second index the frequency\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+% TB7\
+%\
+% z1 (floor): thin carpet on concrete\
+% z2 (ceil): fissured ceiling tile\
+% walls: 50mm mineral wool -0.05 to compensate for gaps (with variations)\
+%               x1  x2  y1  y2  z1  z2    kHz\
+alpha_set_1 = [.65 .62 .60 .64 .02 .49 % 0.125\
+               .36 .37 .39 .42 .04 .53 % 0.25\
+               .60 .62 .59 .62 .08 .53 % 0.5\
+               .57 .52 .47 .57 .20 .73 % 1.0\
+               .69 .67 .69 .70 .35 .92 % 2.0\
+               .57 .62 .57 .52 .40 .96 % 4.0\
+               .57 .62 .59 .62 .42 .96]; % 8.0\
+\
+(After walls*0.9 and then *0.8)\
+0.4680    0.4464    0.4320    0.4608    0.0200\
+    0.2592    0.2664    0.2808    0.3024    0.0400\
+    0.4320    0.4464    0.4248    0.4464    0.0800\
+    0.4104    0.3744    0.3384    0.4104    0.2000\
+    0.4968    0.4824    0.4968    0.5040    0.3500\
+    0.4104    0.4464    0.4104    0.3744    0.4000\
+    0.4104    0.4464    0.4248    0.4464    0.4200\
+\
+  Column 6\
+\
+    0.4900\
+    0.5300\
+    0.5300\
+    0.7300\
+    0.9200\
+    0.9600\
+    0.9600\
+\
+% Kentish Town Lab\
+%\
+% z1 (floor): wood (16mm on 40mm planks)\
+% z2 (ceil): double glazing + 0.1 to compensate for angle and only 50% glass\
+% walls: brick / plaster + 0.12 (with variations)\
+%               x1  x2  y1  y2  z1  z2    kHz\
+alpha_set_2 = [.13 .14 .15 .14 .18 .20 % 0.125\
+               .16 .14 .12 .13 .12 .17 % 0.25\
+               .14 .16 .15 .14 .10 .15 % 0.5\
+               .16 .17 .15 .14 .09 .13 % 1.0\
+               .17 .16 .16 .15 .08 .12 % 2.0\
+               .18 .17 .19 .16 .07 .12 % 4.0\
+               .18 .17 .17 .16 .07 .12]; % 8.0\
+\
+(After walls*1.9 and z1*1.3)\
+\
+    0.2470    0.2660    0.2850    0.2660    0.2340\
+    0.3040    0.2660    0.2280    0.2470    0.1560\
+    0.2660    0.3040    0.2850    0.2660    0.1300\
+    0.3040    0.3230    0.2850    0.2660    0.1170\
+    0.3230    0.3040    0.3040    0.2850    0.1040\
+    0.3420    0.3230    0.3610    0.3040    0.0910\
+    0.3420    0.3230    0.3230    0.3040    0.0910\
+\
+  Column 6\
+\
+    0.2000\
+    0.1700\
+    0.1500\
+    0.1300\
+    0.1200\
+    0.1200\
+    0.1200\
+\
+% Reflective\
+%\
+% z1 (floor): glass window\
+% z2 (ceil): wood (16mm on 40mm planks)\
+% walls: brick / plaster + 0.1 (with variations)\
+%               x1  x2  y1  y2  z1  z2    kHz\
+alpha_set_3 = [.13 .12 .11 .14 .14 .18 % 0.125\
+               .12 .11 .14 .13 .05 .12 % 0.25\
+               .13 .15 .13 .14 .04 .10 % 0.5\
+               .12 .14 .15 .13 .03 .09 % 1.0\
+               .15 .16 .13 .14 .03 .08 % 2.0\
+               .16 .15 .14 .15 .03 .07 % 4.0\
+               .14 .16 .15 .16 .03 .07]; % 8.0\
+}
