@@ -58,21 +58,21 @@ parfor channel_count_index = 1:3
     disp(4 + 4 * channel_count_index + "-channel AAES...");
     
     if channel_count_index == 1
-        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
     elseif channel_count_index == 2
-        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
     else
-        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
     end
 end
 
 delete(gcp('nocreate'));
 
-function GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
+function GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
     parfor room_num = 1:size(rooms, 1)
         disp("Room " + room_num + "...");
     
         current_config = RoomWithAAES(rooms(room_num,:), alphas, src_sets(room_num,:), rec_sets(room_num,:), ls_sets(:,:,room_num), mic_sets(:,:,room_num), sample_rate, bit_depth);
-        current_config.GenerateRIRs();
+        current_config.GenerateSystemIRs();
     end
 end

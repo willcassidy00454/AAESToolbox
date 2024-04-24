@@ -16,7 +16,7 @@
 % Bias is added to loop gain where 0 results in the limit of instability
 % loop_gain_biases_dB = [-2 -4 -6 -200];
 
-function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory, sample_rate)
+function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory)
     %% Internal parameters
     N = 1; % Number of source loudspeakers
     M = 1; % Number of receiver microphones
