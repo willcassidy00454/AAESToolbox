@@ -2,7 +2,7 @@
 % close all
 % tiledlayout(3,1);
 
-%% User inputs
+%% User inputs (currently, L must equal K since the reverberator is square)
 
 % If the sources/receivers are part of the AAES, then simply use their IRs
 % as if they were separate transducers. This duplication acts as a probing
@@ -16,12 +16,12 @@
 % Bias is added to loop gain where 0 results in the limit of instability
 % loop_gain_biases_dB = [-2 -4 -6 -200];
 
-function GenerateAAESIRs(num_aaes_loudspeakers, num_aaes_mics, room_num, alpha_set, loop_gain_biases_dB, output_directory)
+function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory)
     %% Internal parameters
     N = 1; % Number of source loudspeakers
     M = 1; % Number of receiver microphones
-    K = num_aaes_loudspeakers; % Number of AAES loudspeakers
-    L = num_aaes_mics; % Number of AAES microphones
+    K = num_aaes_channels; % Number of AAES loudspeakers
+    L = K; % Number of AAES microphones
 
     reverberator_rt_factors = [1];% 1.5 2 2.5 3];%[0 0.5 1 2 4];
 

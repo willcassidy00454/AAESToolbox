@@ -54,7 +54,6 @@ for room = 1:3
     mic_sets_16ch(:,:,room) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room + "_16ch.dat");
 end
 
-% This currently assumes channel counts of 8, 12 and 16
 parfor channel_count_index = 1:3
     disp(4 + 4 * channel_count_index + "-channel AAES...");
     
