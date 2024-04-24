@@ -21,7 +21,7 @@ for alpha_set = 1:3
     alphas(:, :, alpha_set) = readmatrix("Example Absorption Coefficients/alpha_set_" + alpha_set + ".dat");
 end
 
-% Currently assumes there is only one source and receiver per room
+% There is only ever one source and receiver per room
 % These use the dimensions (room number, axis)
 % [x y z; x y z; x y z]
 % The sources are 2/3 along the x and y axes and 1.2m high
@@ -59,34 +59,23 @@ if uses_parallel_processing
     if isempty(gcp('nocreate'))
         parpool('Processes');
     end
+end
     
-    % This currently assumes channel counts of 8, 12 and 16
-    parfor channel_count_index = 1:3
-        disp(4 + 4 * channel_count_index + "-channel AAES...");
-        
-        if channel_count_index == 1
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
-        elseif channel_count_index == 2
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
-        else
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
-        end
+% This currently assumes channel counts of 8, 12 and 16
+parfor channel_count_index = 1:3 % Change this parfor to for if 
+    disp(4 + 4 * channel_count_index + "-channel AAES...");
+    
+    if channel_count_index == 1
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
+    elseif channel_count_index == 2
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
+    else
+        GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
     end
-    
+end
+
+if uses_parallel_processing
     delete(gcp('nocreate'));
-else
-    % This currently assumes channel counts of 8, 12 and 16
-    for channel_count_index = 1:3
-        disp(4 + 4 * channel_count_index + "-channel AAES...");
-        
-        if channel_count_index == 1
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
-        elseif channel_count_index == 2
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
-        else
-            GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
-        end
-    end
 end
 
 function GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
