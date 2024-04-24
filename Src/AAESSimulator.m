@@ -8,21 +8,30 @@ output_directory = "AAES Receiver RIRs/";
 % 3 parameters by 3^3 combinations
 combined_param_map = GenerateCombinedParamMap(num_channels_set, room_nums, alpha_sets);
 
-% if isempty(gcp('nocreate'))
-%     parpool('Processes');
-% end
+uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
 
-%parfor
-for combined_index = 1:size(combined_param_map, 2)
-    num_channels = combined_param_map(1, combined_index);
-    room_num = combined_param_map(2, combined_index);
-    alpha_set = combined_param_map(3, combined_index);
-    % num_channels = 16;
-    % room_num = 2;
-    % alpha_set = 2;
+if uses_parallel_processing
+    if isempty(gcp('nocreate'))
+        parpool('Processes');
+    end
 
-    % Currently generates a square AAES
-    GenerateAAESIRs(num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory);
+    parfor combined_index = 1:size(combined_param_map, 2)
+        num_channels = combined_param_map(1, combined_index);
+        room_num = combined_param_map(2, combined_index);
+        alpha_set = combined_param_map(3, combined_index);
+        
+        % Currently generates a square AAES
+        GenerateAAESIRs(num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory);
+    end
+
+    delete(gcp('nocreate'));
+else
+    for combined_index = 1:size(combined_param_map, 2)
+        num_channels = combined_param_map(1, combined_index);
+        room_num = combined_param_map(2, combined_index);
+        alpha_set = combined_param_map(3, combined_index);
+
+        % Currently generates a square AAES
+        GenerateAAESIRs(num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory);
+    end
 end
-
-% delete(gcp('nocreate'));
