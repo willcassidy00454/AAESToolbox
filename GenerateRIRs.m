@@ -11,8 +11,8 @@
 % rec_positions         Mx3
 % ls_positions          Kx3
 % mic_positions         Lx3
-% sample_rate           1
-% output_dir            1
+% sample_rate           1x1
+% output_dir            1x1
 
 function GenerateRIRs(room_dim, alphas, src_positions, rec_positions, ls_positions, mic_positions, sample_rate, output_dir, bit_depth, should_normalise)
     if ~exist('should_normalise','var')

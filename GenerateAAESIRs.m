@@ -16,7 +16,7 @@
 % Bias is added to loop gain where 0 results in the limit of instability
 % loop_gain_biases_dB = [-2 -4 -6 -200];
 
-function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory)
+function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory, sample_rate)
     %% Internal parameters
     N = 1; % Number of source loudspeakers
     M = 1; % Number of receiver microphones
@@ -26,7 +26,7 @@ function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biase
     reverberator_rt_factors = [1];% 1.5 2 2.5 3];%[0 0.5 1 2 4];
 
     room_dims = [5.7 7.35 2.5; 8.74 17 5.5; 19.52 30.83 15];
-    rir_directory = "Automated RIRs EQ/AAES IRs Ch["+K+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"] SampleRate[48000]/";
+    rir_directory = "Automated RIRs/AAES IRs Ch["+L+"x"+K+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"]/";
     % rir_directory = "Kentish Town Lab RIRs/16-channel/";
     
     [example_ir, sample_rate] = audioread(rir_directory + "E_1_1.wav");
@@ -87,10 +87,10 @@ function GenerateAAESIRs(num_aaes_channels, room_num, alpha_set, loop_gain_biase
             
             % Compute output one frequency bin at a time (element-wise)
             for bin = 1:num_bins
-                % V = E U + mu F (I - mu X H)^-1 X G U
-                V(:, :, bin) = E(:, :, bin) * U(:, :, bin) + mu .* F(:, :, bin) * inv(eye(K) - mu .* X(:, :, bin) * H(:, :, bin)) * X(:, :, bin) * G(:, :, bin) * U(:, :, bin);
-                
-                % U(:, :, bin) * E(:, :, bin) + mu .* U(:, :, bin) * G(:, :, bin) * X(:, :, bin) * inv(eye(K) - mu .* H(:, :, bin) * X(:, :, bin)) * F(:, :, bin);
+                % V = E U
+                %   + mu F (I - mu X H)^-1 X G U
+                V(:, :, bin) = E(:, :, bin) * U(:, :, bin) ...
+                             + mu .* F(:, :, bin) * inv(eye(K) - mu .* X(:, :, bin) * H(:, :, bin)) * X(:, :, bin) * G(:, :, bin) * U(:, :, bin);
             end
             
             % Convert receiver transfer function back to the time domain
@@ -110,7 +110,7 @@ end
 
 %% Functions
 
-function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_length, filename_base_id, ir_directory, add_noise)
+function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_length, filename_base_id, ir_directory)
     num_rows = size(matrix_to_fill,1);
     num_cols = size(matrix_to_fill,2);
 
@@ -126,18 +126,6 @@ function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_
             for sample_pos = 1:nonzero_length
                 padded_ir(sample_pos) = raw_ir(sample_pos);
             end
-
-            % Remove for normal use % % %
-            % This concatenates -60 dB of noise onto the end
-            % if add_noise
-            %     noise_tail = randn(1, size(padded_ir, 2) - nonzero_length, 'double');
-            %     noise_tail = noise_tail / max(abs(noise_tail));
-            % 
-            %     for sample_pos = 1:size(noise_tail, 2)
-            %         padded_ir(nonzero_length + sample_pos) =  noise_tail(sample_pos) * power(10, -88/20);
-            %     end
-            % end
-            % % % % %
         
             matrix_to_fill(row, col, :) = fft(padded_ir);
         end
@@ -163,11 +151,6 @@ function matrix_to_fill = FillReverberatorMatrix(matrix_to_fill, desired_ir_leng
                 for sample_pos = 1:nonzero_length
                     padded_ir(sample_pos) = raw_ir(sample_pos);
                 end
-
-                % % % Remove this mix for normal use:
-                % padded_ir = padded_ir * 0.4;
-                % padded_ir(1) = padded_ir(1) + 0.6;
-                % % % % %
             end
         
             matrix_to_fill(row, col, :) = fft(padded_ir);

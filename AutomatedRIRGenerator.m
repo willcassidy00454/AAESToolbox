@@ -9,7 +9,7 @@ end
 sample_rate = 48000;
 bit_depth = 24;
 
-% Room dimensions [x y z; x y z; x y z]
+% Room dimensions [x y z; x y z; etc.]
 rooms = [5.7 7.35 2.5; 8.74 17 5.5; 19.52 30.83 15];
 
 % Wall absorption coefficients
@@ -58,21 +58,21 @@ parfor channel_count_index = 1:3
     disp(4 + 4 * channel_count_index + "-channel AAES...");
     
     if channel_count_index == 1
-        GenerateIRsForChannelCount(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
+        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_8ch, mic_sets_8ch, sample_rate, bit_depth);
     elseif channel_count_index == 2
-        GenerateIRsForChannelCount(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
+        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_12ch, mic_sets_12ch, sample_rate, bit_depth);
     else
-        GenerateIRsForChannelCount(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
+        GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets_16ch, mic_sets_16ch, sample_rate, bit_depth);
     end
 end
 
 delete(gcp('nocreate'));
 
-function GenerateIRsForChannelCount(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
+function GenerateAKToolsRIRs(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
     parfor room_num = 1:size(rooms, 1)
         disp("Room " + room_num + "...");
     
         current_config = RoomWithAAES(rooms(room_num,:), alphas, src_sets(room_num,:), rec_sets(room_num,:), ls_sets(:,:,room_num), mic_sets(:,:,room_num), sample_rate, bit_depth);
-        current_config.GenerateIRs();
+        current_config.GenerateRIRs();
     end
 end

@@ -22,7 +22,7 @@ function curvature = GetCurvature(ir, sample_rate)
     m_early = (end_early_dB - start_early_dB) / (end_early_time - start_early_time);
     m_late = (end_late_dB - start_late_dB) / (end_late_time - start_late_time);
 
-    % return difference in gradients -1
+    % return difference in gradients - 1
     curvature = abs(m_late / m_early - 1) * 100;
 end
 
