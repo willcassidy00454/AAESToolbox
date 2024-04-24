@@ -9,16 +9,18 @@ end
 sample_rate = 48000;
 bit_depth = 24;
 
-% Room dimensions [x y z; x y z; etc.]
-rooms = [5.7 7.35 2.5; 8.74 17 5.5; 19.52 30.83 15];
+% Room dimensions in metres [x y z; x y z; etc.]
+rooms = [5.7    7.35    2.5;
+         8.74   17      5.5;
+         19.52  30.83   15];
 
 % Wall absorption coefficients
 % Read "Example Absorption Coefficients/Absorption Coefficients Info.txt" for
 % more info
 alphas = zeros(7, 6, 3);
 
-for set = 1:3
-    alphas(:, :, set) = readmatrix("Example Absorption Coefficients/alpha_set_" + set + ".dat");
+for alpha_set = 1:3
+    alphas(:, :, alpha_set) = readmatrix("Example Absorption Coefficients/alpha_set_" + alpha_set + ".dat");
 end
 
 % There is only ever one source and receiver per room
@@ -45,13 +47,14 @@ mic_sets_12ch = zeros(12,3,3);
 mic_sets_16ch = zeros(16,3,3);
 
 % Load coordinates
-for room = 1:3
-    ls_sets_8ch(:,:,room) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room + "_8ch.dat");
-    ls_sets_12ch(:,:,room) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room + "_12ch.dat");
-    ls_sets_16ch(:,:,room) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room + "_16ch.dat");
-    mic_sets_8ch(:,:,room) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room + "_8ch.dat");
-    mic_sets_12ch(:,:,room) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room + "_12ch.dat");
-    mic_sets_16ch(:,:,room) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room + "_16ch.dat");
+for room_num = 1:3
+    ls_sets_8ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room_num + "_8ch.dat");
+    ls_sets_12ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room_num + "_12ch.dat");
+    ls_sets_16ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/ls_positions_room_" + room_num + "_16ch.dat");
+    
+    mic_sets_8ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room_num + "_8ch.dat");
+    mic_sets_12ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room_num + "_12ch.dat");
+    mic_sets_16ch(:,:,room_num) = readmatrix("Example Transducer Coordinates/mic_positions_room_" + room_num + "_16ch.dat");
 end
 
 % This currently assumes channel counts of 8, 12 and 16
