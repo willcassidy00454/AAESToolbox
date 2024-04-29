@@ -14,6 +14,7 @@ room_dims = [5.7    7.35    2.5;
 
 absorptions_dir = "Example Absorption Coefficients/";
 transducer_coords_dir = "Example Transducer Coordinates/";
+output_parent_dir = "Automated RIRs/";
 
 % Wall absorption coefficients
 % Read "Example Absorption Coefficients/Absorption Coefficients Info.txt" for
@@ -92,20 +93,20 @@ else
     end
 end
 
-function GenerateRIRs(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
+function GenerateRIRs(output_parent_dir, rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
     for room_num = 1:size(rooms, 1)
         disp("Room " + room_num + "...");
     
         current_config = RoomWithAAES(rooms(room_num,:), alphas, src_sets(room_num,:), rec_sets(room_num,:), ls_sets(:,:,room_num), mic_sets(:,:,room_num), sample_rate, bit_depth);
-        current_config.GenerateSystemIRs();
+        current_config.GenerateSystemIRs(output_parent_dir);
     end
 end
 
-function GenerateRIRsParallel(rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
+function GenerateRIRsParallel(output_parent_dir, rooms, alphas, src_sets, rec_sets, ls_sets, mic_sets, sample_rate, bit_depth)
     parfor room_num = 1:size(rooms, 1)
         disp("Room " + room_num + "...");
     
         current_config = RoomWithAAES(rooms(room_num,:), alphas, src_sets(room_num,:), rec_sets(room_num,:), ls_sets(:,:,room_num), mic_sets(:,:,room_num), sample_rate, bit_depth);
-        current_config.GenerateSystemIRs();
+        current_config.GenerateSystemIRs(output_parent_dir);
     end
 end

@@ -24,8 +24,8 @@ classdef RoomWithAAES
        
        % Generates the room impulse responses for each
        % loudspeaker-microphone pair in the room
-       function GenerateSystemIRs(obj)
-           output_dir = "Automated RIRs/AAES IRs Ch["+size(obj.mic_positions, 1)+"x"+size(obj.ls_positions, 1)+"] Room"+mat2str(obj.room_dims)+" AlphaSet["+obj.alpha_set+"]/";
+       function GenerateSystemIRs(obj, output_parent_dir)
+           output_dir = output_parent_dir + "AAES IRs Ch["+size(obj.mic_positions, 1)+"x"+size(obj.ls_positions, 1)+"] Room"+mat2str(obj.room_dims)+" AlphaSet["+obj.alpha_set+"]/";
            mkdir(output_dir);
 
            alphas = readmatrix("Example Absorption Coefficients/alpha_set_" + obj.alpha_set + ".dat");
