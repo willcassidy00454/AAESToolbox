@@ -29,8 +29,8 @@ This script simulates the room impulse responses between loudspeaker and microph
 
 ### Parameters
 
-- ```uses_parallel_processing``` can be set to ```true``` to use MATLAB's Parallel Computing Toolbox for parallelisation.
 - ```room_dims``` specifies the room dimensions in metres in the following format: ```[x y z; x y z; etc.]``` where ```x``` and ```y``` are the floor dimensions and ```z``` is height.
 - ```absorptions_dir``` is the read directory of the absorption coefficients.
 - ```transducer_coords_dir``` is the read directory of the transducer coordinates.
 - ```output_parent_dir``` is the write directory of the simulated RIRs. These will be written into folders regarding each room condition.
+- ```uses_parallel_processing``` can be set to ```true``` to use MATLAB's Parallel Computing Toolbox for parallelisation.
