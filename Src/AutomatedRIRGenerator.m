@@ -1,5 +1,5 @@
 % This script generates AAES IRs for a set of rooms with varying
-% dimensions, reflection coefficients and AAES channel counts.
+% dimensions, absorption coefficients and AAES channel counts.
 
 uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
 
