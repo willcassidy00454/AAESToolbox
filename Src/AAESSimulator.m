@@ -1,14 +1,19 @@
+%% User Parameters
+
+rir_parent_dir = "Automated RIRs/";
+output_dir = "AAES Receiver RIRs/";
+
 num_channels_set = [4];%[8 12 16];
 room_nums = [1];%[1 2 3];
 alpha_sets = [1];% 3];
 loop_gain_biases_dB = [0];%-2 -4 -6];
 
-output_directory = "AAES Receiver RIRs/";
+uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
+
+%% Generation
 
 % 3 parameters by 3^3 combinations
 combined_param_map = GenerateCombinedParamMap(num_channels_set, room_nums, alpha_sets);
-
-uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
 
 if uses_parallel_processing
     if isempty(gcp('nocreate'))
@@ -21,7 +26,7 @@ if uses_parallel_processing
         alpha_set = combined_param_map(3, combined_index);
         
         % Currently generates a square AAES
-        GenerateAAESIRs(num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory);
+        GenerateAAESIRs(rir_parent_dir, num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_dir);
     end
 
     delete(gcp('nocreate'));
@@ -32,6 +37,6 @@ else
         alpha_set = combined_param_map(3, combined_index);
 
         % Currently generates a square AAES
-        GenerateAAESIRs(num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_directory);
+        GenerateAAESIRs(rir_parent_dir, num_channels, num_channels, room_num, alpha_set, loop_gain_biases_dB, output_dir);
     end
 end

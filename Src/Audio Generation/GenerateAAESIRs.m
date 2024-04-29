@@ -16,7 +16,7 @@
 % Bias is added to loop gain where 0 results in the limit of instability
 % loop_gain_biases_dB = [-2 -4 -6 -200];
 
-function GenerateAAESIRs(num_aaes_loudspeakers, num_aaes_mics, room_num, alpha_set, loop_gain_biases_dB, output_directory)
+function GenerateAAESIRs(rir_parent_dir, num_aaes_loudspeakers, num_aaes_mics, room_num, alpha_set, loop_gain_biases_dB, output_directory)
     %% Internal parameters
     N = 1; % Number of source loudspeakers
     M = 1; % Number of receiver microphones
@@ -26,7 +26,7 @@ function GenerateAAESIRs(num_aaes_loudspeakers, num_aaes_mics, room_num, alpha_s
     reverberator_rt_factors = [1];% 1.5 2 2.5 3];%[0 0.5 1 2 4];
 
     room_dims = [5.7 7.35 2.5; 8.74 17 5.5; 19.52 30.83 15];
-    rir_directory = "Automated RIRs/AAES IRs Ch["+L+"x"+K+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"]/";
+    rir_directory = rir_parent_dir + "AAES IRs Ch["+L+"x"+K+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"]/";
     % rir_directory = "Kentish Town Lab RIRs/16-channel/";
     
     [example_ir, sample_rate] = audioread(rir_directory + "E_1_1.wav");
