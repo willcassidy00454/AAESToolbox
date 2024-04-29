@@ -1,7 +1,7 @@
 % This script generates AAES IRs for a set of rooms with varying
 % dimensions, absorption coefficients and AAES channel counts.
 
-uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
+%% User Parameters
 
 % General audio parameters
 sample_rate = 48000;
@@ -15,6 +15,10 @@ room_dims = [5.7    7.35    2.5;
 absorptions_dir = "Example Absorption Coefficients/";
 transducer_coords_dir = "Example Transducer Coordinates/";
 output_parent_dir = "Automated RIRs/";
+
+uses_parallel_processing = true; % Change this to false if you don't have access to the Parallel Computing Toolbox
+
+%% Generation
 
 % Wall absorption coefficients
 % Read "Example Absorption Coefficients/Absorption Coefficients Info.txt" for
