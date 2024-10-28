@@ -1,20 +1,7 @@
-% clear all
-% close all
-% tiledlayout(3,1);
-
-%% User inputs
 
 % If the sources/receivers are part of the AAES, then simply use their IRs
 % as if they were separate transducers. This duplication acts as a probing
 % of the desired AAES transducers.
-
-% num_aaes_channels = 8;
-% 
-% room_num = 1;
-% alpha_set = 1;
-
-% Bias is added to loop gain where 0 results in the limit of instability
-% loop_gain_biases_dB = [-2 -4 -6 -200];
 
 function GenerateAAESIRs(rir_parent_dir, num_aaes_loudspeakers, num_aaes_mics, room_num, alpha_set, loop_gain_biases_dB, output_directory)
     %% Internal parameters
@@ -23,11 +10,10 @@ function GenerateAAESIRs(rir_parent_dir, num_aaes_loudspeakers, num_aaes_mics, r
     K = num_aaes_loudspeakers; % Number of AAES loudspeakers
     L = num_aaes_mics; % Number of AAES microphones
 
-    reverberator_rt_factors = [1];% 1.5 2 2.5 3];%[0 0.5 1 2 4];
+    reverberator_rt_factors = [1 1.5 2 2.5 3];
 
     room_dims = [5.7 7.35 2.5; 8.74 17 5.5; 19.52 30.83 15];
-    rir_directory = rir_parent_dir + "AAES IRs Ch["+L+"x"+K+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"]/";
-    % rir_directory = "Kentish Town Lab RIRs/16-channel/";
+    rir_directory = rir_parent_dir + "AAES IRs Ch["+L+"] Room"+mat2str(room_dims(room_num, :))+" AlphaSet["+alpha_set+"] SampleRate[48000]/";
     
     [example_ir, sample_rate] = audioread(rir_directory + "E_1_1.wav");
     passive_ir_length = size(example_ir, 1); % Use the first IR of the set to determine IR lengths
@@ -45,20 +31,20 @@ function GenerateAAESIRs(rir_parent_dir, num_aaes_loudspeakers, num_aaes_mics, r
     
     %% Fill transfer function matrices by reading IR files and performing FFTs
     
-    U = FillTransferFunctionMatrix(U, num_bins, "U", rir_directory, false);
-    E = FillTransferFunctionMatrix(E, num_bins, "E", rir_directory, true);
-    F = FillTransferFunctionMatrix(F, num_bins, "F", rir_directory, true);
-    G = FillTransferFunctionMatrix(G, num_bins, "G", rir_directory, true);
-    H = FillTransferFunctionMatrix(H, num_bins, "H", rir_directory, true);
+    U = FillTransferFunctionMatrix(U, num_bins, "U", rir_directory);
+    E = FillTransferFunctionMatrix(E, num_bins, "E", rir_directory);
+    F = FillTransferFunctionMatrix(F, num_bins, "F", rir_directory);
+    G = FillTransferFunctionMatrix(G, num_bins, "G", rir_directory);
+    H = FillTransferFunctionMatrix(H, num_bins, "H", rir_directory);
 
     mkdir(output_directory);
-    % writelines("Worst-case gains before instabilities:", output_directory + "GBIs.txt", WriteMode="overwrite");
 
     for reverberator_rt_factor = reverberator_rt_factors
         % The 16ch folders are always used for the reverberator, since
         % lower channel counts just read a subset
 
-        X = FillReverberatorMatrix(X, num_bins, "Pink Reverberator IRs/Decaying Noise Ch[16] Room["+room_num+"] AlphaSet["+alpha_set+"] RTFactor["+reverberator_rt_factor+"]/");
+        reverberator_dir = rir_parent_dir + "../Pink Reverberator IRs/Decaying Noise Ch[16] Room["+room_num+"] AlphaSet["+alpha_set+"] RTFactor["+reverberator_rt_factor+"]/";
+        X = FillReverberatorMatrix(X, num_bins, reverberator_dir);
 
         gbi_dB = 0.0;
 
@@ -98,11 +84,8 @@ function GenerateAAESIRs(rir_parent_dir, num_aaes_loudspeakers, num_aaes_mics, r
             
             %% Save output
             
-            audiowrite(output_directory + "ReverberatorRTFactor["+reverberator_rt_factor+"]_LoopGain["+loop_gain_bias_dB+"].wav", output_signal, sample_rate, 'BitsPerSample', bit_depth); 
+            audiowrite(output_directory + "Ch["+K+"]_Room["+room_num+"]_AlphaSet["+alpha_set+"]_RTFactor["+reverberator_rt_factor+"]_LoopGain["+loop_gain_bias_dB+"].wav", output_signal, sample_rate, 'BitsPerSample', bit_depth); 
         end
-
-        % Write GBI to .txt
-        % writelines("Ch["+K+"] Room["+room_num+"] AlphaSet["+alpha_set+"] ReverberatorRTFactor["+reverberator_rt_factor+"]: " + gbi_dB + " dB", output_directory + "GBIs.txt", WriteMode="append");
     end
 
     disp("Finished folder: " + output_directory);
