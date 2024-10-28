@@ -27,7 +27,7 @@ function PlotSpectrogram(ir,sample_rate,x_limit)
 
     nexttile
     %[S,F,T] = 
-    pspectrum(ir,sample_rate,"spectrogram","FrequencyLimits",[20 20000],"OverlapPercent",80,"TimeResolution",0.02,"MinThreshold",-85);
+    pspectrum(ir,sample_rate,"spectrogram","FrequencyLimits",[20 20000],"OverlapPercent",80,"FrequencyResolution",20,"MinThreshold",-105);
     % time_values = T;
     % pcolor(time_values,F,log10(abs(S)));
     % shading flat

@@ -17,7 +17,7 @@ function PlotEDC(ir, sample_rate, line_style, x_max, y_min, integration_limit_se
     end
 
     if ~exist('y_min','var')
-        y_min = -70;
+        y_min = -50;
     end
 
     if exist('integration_limit_sec','var')
