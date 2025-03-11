@@ -22,7 +22,7 @@
 % sample_rate           1x1
 % output_dir            1x1
 
-function GenerateAKToolsRIRs(room_dim, alphas, src_positions, rec_positions, ls_positions, mic_positions, src_rotations, rec_rotations, ls_rotations, mic_rotations, src_directivities, rec_directivities, ls_directivities, mic_directivities, sample_rate, output_dir, bit_depth, should_high_pass, should_normalise)
+function GenerateAKToolsRIRs3rdOrderOutput(room_dim, alphas, src_positions, rec_positions, ls_positions, mic_positions, src_rotations, rec_rotations, ls_rotations, mic_rotations, src_directivities, rec_directivities, ls_directivities, mic_directivities, sample_rate, output_dir, bit_depth, should_high_pass, should_normalise)
     if ~exist('should_normalise','var')
         should_normalise = true;
     end
@@ -30,8 +30,13 @@ function GenerateAKToolsRIRs(room_dim, alphas, src_positions, rec_positions, ls_
     %% Generate all IRs
 
     u = 1; % Source is a single dirac delta
-    e = GenerateSrcToRecIRs(src_positions, rec_positions, src_rotations, rec_rotations, src_directivities, rec_directivities, room_dim, alphas, sample_rate, "E", should_high_pass); % Sources to Receivers
-    f = GenerateSrcToRecIRs(ls_positions, rec_positions, ls_rotations, rec_rotations, ls_directivities, rec_directivities, room_dim, alphas, sample_rate, "F", should_high_pass); % AAES to Receivers
+
+    % This assumes one receiver, but with 3rd order spherical harmonics
+    for third_order_sh_output_index = 1:16
+        e(third_order_sh_output_index,1,:) = GenerateSrcToRecIRs(src_positions, rec_positions, src_rotations, rec_rotations, src_directivities, rec_directivities, room_dim, alphas, sample_rate, "E", should_high_pass, third_order_sh_output_index); % Sources to Receivers
+        f(third_order_sh_output_index,:,:) = GenerateSrcToRecIRs(ls_positions, rec_positions, ls_rotations, rec_rotations, ls_directivities, rec_directivities, room_dim, alphas, sample_rate, "F", should_high_pass, third_order_sh_output_index); % AAES to Receivers
+    end
+
     g = GenerateSrcToRecIRs(src_positions, mic_positions, src_rotations, mic_rotations, src_directivities, mic_directivities, room_dim, alphas, sample_rate, "G", should_high_pass); % Sources to AAES
     h = GenerateSrcToRecIRs(ls_positions, mic_positions, ls_rotations, mic_rotations, ls_directivities, mic_directivities, room_dim, alphas, sample_rate, "H", should_high_pass); % AAES to AAES
 
@@ -58,8 +63,8 @@ function GenerateAKToolsRIRs(room_dim, alphas, src_positions, rec_positions, ls_
     disp("Saving IRs...");
 
     SaveIRs(u, sample_rate, bit_depth, output_dir, "U"); % Untested - this should output a single dirac delta
-    SaveIRs(e, sample_rate, bit_depth, output_dir, "E");
-    SaveIRs(f, sample_rate, bit_depth, output_dir, "F");
+    SaveIRsMultichannelReceivers(e, sample_rate, bit_depth, output_dir, "E");
+    SaveIRsMultichannelReceivers(f, sample_rate, bit_depth, output_dir, "F");
     SaveIRs(g, sample_rate, bit_depth, output_dir, "G");
     SaveIRs(h, sample_rate, bit_depth, output_dir, "H");
 
@@ -81,5 +86,5 @@ function GenerateAKToolsRIRs(room_dim, alphas, src_positions, rec_positions, ls_
     writelines("AAES mic positions:", output_dir + "README.txt", WriteMode="append");
     writetable(array2table(mic_positions), output_dir + "README.txt", WriteMode="append");
     
-    disp("Generation Complete!");
+    disp("Finished folder: "+output_dir);
 end
