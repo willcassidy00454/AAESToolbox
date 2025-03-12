@@ -18,10 +18,12 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     K = num_aaes_loudspeakers; % Number of AAES loudspeakers
     L = num_aaes_mics; % Number of AAES microphones
 
+    output_length_factor = 1.5; % Length of output IRs as a factor of the src-rec RIR length
+
     [example_ir, sample_rate] = audioread(rir_directory + "E_R1_S1.wav");
     passive_ir_length = size(example_ir, 1); % Use the first IR of the set to determine IR lengths
-    num_bins = round(passive_ir_length * 3); % Number of frequency bins (equals length of IR to save)
-    
+    num_bins = round(passive_ir_length * output_length_factor); % Number of frequency bins (equals length of IR to save)
+   
     %% Initialise matrices
     
     U = zeros(N, 1, num_bins); % U = 1xN Inputs
