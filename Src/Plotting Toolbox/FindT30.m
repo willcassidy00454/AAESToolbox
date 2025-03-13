@@ -2,9 +2,9 @@
 % This is based on the gradient calculated between -5 dB and -35 dB
 function t30 = FindT30(ir, fs, octave_band_centre)
     if ~exist("octave_band_centre", "var")
-        edc_dB = PlotEDC(ir, fs);
+        edc_dB = GetEDC(ir, fs);
     else
-        edc_dB = PlotEDC(ir, fs, octave_band_centre);
+        edc_dB = GetEDC(ir, fs, octave_band_centre);
     end
 
     minus_5_index = find(edc_dB <= -5, 1);
