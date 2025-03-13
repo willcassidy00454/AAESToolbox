@@ -67,7 +67,7 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     disp("Simulating AAES for RIRs in: "+rir_directory+" with reverberator in: "+reverberator_directory+"...");
 
     for loop_gain_dB = loop_gains_dB
-        disp("Loop Gain " + loop_gain_dB + "...");
+        disp("Loop Gain = " + loop_gain_dB + " dB...");
         for spherical_harmonic = 1:num_spherical_harmonics
             disp("Spherical Harmonic " + spherical_harmonic + "...");
     
