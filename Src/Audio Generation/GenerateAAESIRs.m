@@ -47,10 +47,9 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     F = FillTransferFunctionMatrix(F, num_bins, "F", rir_directory, receivers_are_3rd_order);
     G = FillTransferFunctionMatrix(G, num_bins, "G", rir_directory);
     H = FillTransferFunctionMatrix(H, num_bins, "H", rir_directory);
+    X = FillTransferFunctionMatrix(X, num_bins, "X", reverberator_directory);
 
     mkdir(output_directory);
-
-    X = FillReverberatorMatrix(X, num_bins, reverberator_directory);
 
     if exist("mic_ls_routing", "var")
         X = X .* mic_ls_routing;
@@ -158,28 +157,6 @@ function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_
                 padded_ir(1:nonzero_length) = raw_ir(1:nonzero_length);
                 matrix_to_fill(row, col, :) = fft(padded_ir);
             end
-        end
-    end
-end
-
-function matrix_to_fill = FillReverberatorMatrix(matrix_to_fill, desired_ir_length, ir_directory)
-    num_rows = size(matrix_to_fill,1);
-    num_cols = size(matrix_to_fill,2);
-
-    % Load each IR, zero pad, take FFT and insert into transfer function matrix
-    for row = 1:num_rows
-        for col = 1:num_cols
-            padded_ir = zeros(1, desired_ir_length);
-    
-            [raw_ir, ~] = audioread(ir_directory + "X_R" + row + "_S" + col + ".wav");
-        
-            nonzero_length = min(length(raw_ir), desired_ir_length); % Iterate up to the end of the audio, truncating if too long
-
-            for sample_pos = 1:nonzero_length
-                padded_ir(sample_pos) = raw_ir(sample_pos);
-            end
-        
-            matrix_to_fill(row, col, :) = fft(padded_ir);
         end
     end
 end
