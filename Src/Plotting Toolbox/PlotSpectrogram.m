@@ -38,6 +38,6 @@ function PlotSpectrogram(ir,sample_rate,x_limit,should_normalise)
 
     xlim([0, x_limit]);
 
-    set(gca,'fontsize', 18);
-    title("Title","FontSize",22,"FontWeight","normal");
+    set(gca,'fontsize', 15);
+    title("Title","FontSize",16,"FontWeight","normal");
 end

@@ -42,9 +42,9 @@ function integrated_values_dB = PlotEDC(ir, sample_rate, octave_band_centre, lin
     time_values_seconds = time_values_samples / sample_rate;
     
     % Plot energy values over time
-    plot(time_values_seconds,integrated_values_dB,'LineStyle',line_style,"LineWidth",1);
-    title("Energy Decay Curve","FontSize",24,"FontWeight","normal");
-    set(gca,'fontsize', 18);
+    plot(time_values_seconds,integrated_values_dB,'LineStyle',line_style,"LineWidth",1.5,"MarkerSize",3);
+    set(gca,'fontsize', 15);
+    title("Energy Decay Curve","FontSize",16,"FontWeight","normal");
     xlabel("Time (s)");
     ylabel("Energy (dB)");
     set(gcf,'position',[400,2000,500,300]);
