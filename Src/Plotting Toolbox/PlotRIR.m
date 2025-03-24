@@ -48,19 +48,27 @@
 % for i=1:4
 % hold on
 % [ir, fs] = audioread("AbsorbCoeffsTest/ConcertHall.wav");
-[ir, fs] = audioread("Reverberators/Reverberator 3/X_R1_S1.wav");
-% [ir, fs] = audioread("AAESinMATLAB/Outputs/AAES_Inline_TV_30.wav");
+% [ir, fs] = audioread("Reverberators/Reverberator 3/X_R1_S1.wav");
+% [irs, fs] = audioread("Audio Data/AAES Receiver RIRs/AAES Room 1 Absorption 1 RT 1 Loop Gain -1 Filter 1 Routing 1/ReceiverRIR.wav");
+% ir = irs(:,4);
+% [ir, fs] = audioread("AAESinMATLAB/Outputs/AAES_Inline_TV_+2.wav");
 % [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 1/G_R1_S1.wav");
 % tiledlayout(3,1);
-% [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 14/ReceiverRIR.wav");
+hold on
+[ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 3/ReceiverRIR.wav");
 % ir1 = zeros(48000 * 4, 1);
 % [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 1/E_R1_S1.wav");
 % [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/Pilsen.wav");
 
+% delay_matrix = readmatrix("Active Acoustics Review/Directivities/delay_matrix_room_10.dat");
+% PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 9/", "H", 8, 8, "b. Omni Mics", delay_matrix);
 % plot(ir);
 % ir1(1:length(ir)) = ir;
 % disp(mean(ir));
-PlotSpectrogram(ir, fs, 2, true);
+
+PlotEDC(ir, fs, false, "-.", 2.5);
+% PlotSpectrogram(ir, fs, 1.2, true);
+
 % PlotEDCDerivative(ir, fs, 3000, 1.8);
 % disp(FindT30(ir, fs, 125));
 % disp(FindT30(ir, fs, 250));
@@ -71,8 +79,12 @@ PlotSpectrogram(ir, fs, 2, true);
 % disp(FindT30(ir, fs, 8000));
 % end
 
+% For single EDC plots:
+set(gcf, "position", [300 300 600 500]);
+
+
 % For triple-stacked figures:
-set(gcf, "position", [300 300 550 900]);
+% set(gcf, "position", [300 000 550 900]);
 
 
 % For two side-by-side figures:
@@ -123,7 +135,7 @@ set(gcf, "position", [300 300 550 900]);
 %     % figure
 %     % PlotIRs("Active Acoustics Review/Generated AAES RIRs SH Test/Azimuth/", 8, plot_idx);
 %     % set(gcf,'position',[300 * plot_idx, 400, 300, 800]);
-%     PlotSHDirectivity("Active Acoustics Review/Generated AAES RIRs SH Test/Elevation/", 8, plot_idx, 400);
+%     PlotSHDirectivity("Active Acoustics Review/Generated AAES RIRs SH Test/Azimuth/", 8, plot_idx, 400);
 % end
 
 % % % Use this for directivity test:
@@ -409,8 +421,29 @@ function PlotAllEDCs(octave_centre_f)
     end
 end
 
-function PlotMatrixDRR(read_dir, matrix_prefix, num_rows, num_cols, plot_title)
-    matrix_drr = GetMatrixDRR(read_dir,matrix_prefix,num_rows,num_cols);
+function PlotMatrixDRR(read_dir, matrix_prefix, num_rows, num_cols, plot_title, src_rec_delay_matrix)
+    nexttile
+    
+    if ~exist("src_rec_delay_matrix", "var")
+        [matrix_drr, delay_matrix] = GetMatrixDRR(read_dir, ...
+                                matrix_prefix, ...
+                                num_rows, ...
+                                num_cols);
+    else
+        [matrix_drr, ~] = GetMatrixDRR(read_dir, ...
+                                matrix_prefix, ...
+                                num_rows, ...
+                                num_cols, ...
+                                [], ...
+                                src_rec_delay_matrix);
+    end
+
     heatmap(matrix_drr, "Colormap", parula, "CellLabelColor", "none");
+
+    clim([-60, 0]);
+
+    xlabel("Microphones");
+    ylabel("Loudspeakers");
+
     title(plot_title);
 end
