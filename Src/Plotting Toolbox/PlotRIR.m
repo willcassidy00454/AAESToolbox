@@ -52,22 +52,25 @@
 % [irs, fs] = audioread("Audio Data/AAES Receiver RIRs/AAES Room 1 Absorption 1 RT 1 Loop Gain -1 Filter 1 Routing 1/ReceiverRIR.wav");
 % ir = irs(:,4);
 % [ir, fs] = audioread("AAESinMATLAB/Outputs/AAES_Inline_TV_+2.wav");
-% [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 1/G_R1_S1.wav");
-% tiledlayout(3,1);
-hold on
-[ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 3/ReceiverRIR.wav");
+% [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 10/E_R1_S1.wav");
+% % tiledlayout(3,1);
+% hold on
+% [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 17/ReceiverRIR.wav");
 % ir1 = zeros(48000 * 4, 1);
 % [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 1/E_R1_S1.wav");
 % [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/Pilsen.wav");
 
-% delay_matrix = readmatrix("Active Acoustics Review/Directivities/delay_matrix_room_10.dat");
-% PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 9/", "H", 8, 8, "b. Omni Mics", delay_matrix);
+% disp(FindT30(ir,fs,1000));
+
+delay_matrix = readmatrix("Active Acoustics Review/Directivities/delay_matrix_room_10.dat");
+PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 9/", "H", 8, 8, "a. Cardioid Mics", delay_matrix);
 % plot(ir);
 % ir1(1:length(ir)) = ir;
 % disp(mean(ir));
 
-PlotEDC(ir, fs, false, "-.", 2.5);
-% PlotSpectrogram(ir, fs, 1.2, true);
+% PlotEDC(ir, fs, false, "-.", 2.5);
+% PlotSpectrogram(ir, fs, 3, true);
+% PlotRTOverFrequency(ir, fs, "1/12 octave");
 
 % PlotEDCDerivative(ir, fs, 3000, 1.8);
 % disp(FindT30(ir, fs, 125));
@@ -79,12 +82,16 @@ PlotEDC(ir, fs, false, "-.", 2.5);
 % disp(FindT30(ir, fs, 8000));
 % end
 
-% For single EDC plots:
-set(gcf, "position", [300 300 600 500]);
+% For single EDC or RT plots:
+% set(gcf, "position", [300 300 600 500]);
 
 
 % For triple-stacked figures:
-% set(gcf, "position", [300 000 550 900]);
+% set(gcf, "position", [300 0 550 900]);
+
+
+% For triple-horiz figures:
+% set(gcf, "position", [300 0 1120 300]);
 
 
 % For two side-by-side figures:
@@ -446,4 +453,36 @@ function PlotMatrixDRR(read_dir, matrix_prefix, num_rows, num_cols, plot_title, 
     ylabel("Loudspeakers");
 
     title(plot_title);
+end
+
+function PlotRTOverFrequency(ir, fs, bandwidth_mode)
+    if bandwidth_mode == "1 octave"
+        num_bands = 4;    
+    elseif bandwidth_mode == "1/3 octave"
+        num_bands = 8;
+    elseif bandwidth_mode == "1/6 octave"
+        num_bands = 12;
+    elseif bandwidth_mode == "1/12 octave"
+        num_bands = 24;
+    end
+
+    band_centres = 2 * logspace(1, 4, num_bands);
+    t30s = zeros(num_bands, 1);
+
+    for band_index = 1:num_bands
+        band_centre = band_centres(band_index);
+        t30s(band_index) = FindT30(ir,fs,band_centre,bandwidth_mode);
+    end
+
+    semilogx(band_centres, t30s, "LineWidth", 1.5);
+    set(gca,'fontsize', 15);
+    title("Title","FontSize",16,"FontWeight","normal");
+    xlabel("Frequency / Hz");
+    ylabel("$T_{30}$ / s","Interpreter","latex");
+    xlim([20 20000]);
+    ylim([0 3.5]);
+    xticks([20 200 2000 20000]);
+    xticklabels(["20", "200", "2k", "20k"]);
+    grid on
+    hold on
 end

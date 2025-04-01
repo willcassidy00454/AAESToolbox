@@ -1,10 +1,14 @@
 % Returns T_30 of an IR in the specified octave band
 % This is based on the gradient calculated between -5 dB and -35 dB
-function t30 = FindT30(ir, fs, octave_band_centre)
-    if ~exist("octave_band_centre", "var")
+function t30 = FindT30(ir, fs, band_centre, bandwidth_mode)
+    if ~exist("bandwidth_mode", "var")
+        bandwidth_mode = "1 octave";
+    end
+
+    if ~exist("band_centre", "var")
         edc_dB = GetEDC(ir, fs);
     else
-        edc_dB = GetEDC(ir, fs, octave_band_centre);
+        edc_dB = GetEDC(ir, fs, band_centre, bandwidth_mode);
     end
 
     minus_5_index = find(edc_dB <= -5, 1);

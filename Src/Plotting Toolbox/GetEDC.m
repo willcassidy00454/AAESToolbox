@@ -9,9 +9,13 @@
 % y_min - Minimum energy value to plot in dB (defaults to -70 dB)
 % integration_limit_sec - integration limit in seconds (defaults to the length of the IR)
 
-function [integrated_values_dB, time_values_seconds] = GetEDC(ir, sample_rate, octave_band_centre, integration_limit_sec)
+function [integrated_values_dB, time_values_seconds] = GetEDC(ir, sample_rate, octave_band_centre, bandwidth_mode, integration_limit_sec)
     if ~exist('octave_band_centre','var')
         octave_band_centre = false;
+    end
+
+    if ~exist("bandwidth_mode","var")
+        bandwidth_mode = "1 octave";
     end
     
     if exist('integration_limit_sec','var')
@@ -21,7 +25,7 @@ function [integrated_values_dB, time_values_seconds] = GetEDC(ir, sample_rate, o
     end
 
     if octave_band_centre ~= false
-        oct_filt = octaveFilter(octave_band_centre,"SampleRate",sample_rate);
+        oct_filt = octaveFilter(octave_band_centre, bandwidth_mode, "SampleRate",sample_rate);
         ir = oct_filt(ir);
     end
 
