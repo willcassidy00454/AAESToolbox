@@ -18,10 +18,10 @@ function [integrated_values_dB, time_values_seconds] = GetEDC(ir, sample_rate, o
         bandwidth_mode = "1 octave";
     end
     
-    if exist('integration_limit_sec','var')
-        integration_limit_samples = integration_limit_sec * sample_rate;
-    else
+    if ~exist('integration_limit_sec','var')
         integration_limit_samples = size(ir,1);
+    else
+        integration_limit_samples = integration_limit_sec * sample_rate;
     end
 
     if octave_band_centre ~= false

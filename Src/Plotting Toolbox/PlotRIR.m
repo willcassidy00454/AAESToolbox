@@ -44,7 +44,7 @@
 
 
 % figure
-% nexttile
+nexttile
 % for i=1:4
 % hold on
 % [ir, fs] = audioread("AbsorbCoeffsTest/ConcertHall.wav");
@@ -55,22 +55,22 @@
 % [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 10/E_R1_S1.wav");
 % % tiledlayout(3,1);
 % hold on
-% [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 17/ReceiverRIR.wav");
+% [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/AAES Condition 18/ReceiverRIR.wav");
 % ir1 = zeros(48000 * 4, 1);
 % [ir, fs] = audioread("Active Acoustics Review/Generated AAES RIRs/Room Condition 1/E_R1_S1.wav");
 % [ir, fs] = audioread("Active Acoustics Review/AAES Receiver RIRs/Pilsen.wav");
 
 % disp(FindT30(ir,fs,1000));
 
-delay_matrix = readmatrix("Active Acoustics Review/Directivities/delay_matrix_room_10.dat");
-PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 9/", "H", 8, 8, "a. Cardioid Mics", delay_matrix);
+% delay_matrix = readmatrix("Active Acoustics Review/Directivities/delay_matrix_room_10.dat");
+PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 10/", "H", 8, 8, "b. Omni Mics");%, delay_matrix);
 % plot(ir);
 % ir1(1:length(ir)) = ir;
 % disp(mean(ir));
 
 % PlotEDC(ir, fs, false, "-.", 2.5);
 % PlotSpectrogram(ir, fs, 3, true);
-% PlotRTOverFrequency(ir, fs, "1/12 octave");
+% PlotRTOverFrequency(ir, fs, "1/6 octave");
 
 % PlotEDCDerivative(ir, fs, 3000, 1.8);
 % disp(FindT30(ir, fs, 125));
@@ -83,7 +83,7 @@ PlotMatrixDRR("Active Acoustics Review/Generated AAES RIRs/Room Condition 9/", "
 % end
 
 % For single EDC or RT plots:
-% set(gcf, "position", [300 300 600 500]);
+set(gcf, "position", [300 300 600 500]);
 
 
 % For triple-stacked figures:
