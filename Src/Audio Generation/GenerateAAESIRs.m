@@ -3,9 +3,9 @@
 % as if they were separate transducers. This duplication acts as a probing
 % of the desired AAES transducers.
 
-function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory, loop_gains_dB, num_aaes_loudspeakers, num_aaes_mics, bit_depth, should_normalise, receivers_are_3rd_order, loop_gain_is_relative_to_gbi, mic_ls_routing)
-    if ~exist("receivers_are_3rd_order", "var")
-        receivers_are_3rd_order = false;
+function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory, loop_gains_dB, num_aaes_loudspeakers, num_aaes_mics, bit_depth, should_normalise, receivers_are_4th_order, loop_gain_is_relative_to_gbi, mic_ls_routing)
+    if ~exist("receivers_are_4th_order", "var")
+        receivers_are_4th_order = false;
     end
 
     if ~exist("loop_gain_is_relative_to_gbi", "var")
@@ -28,9 +28,9 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     
     U = zeros(N, 1, num_bins); % U = 1xN Inputs
 
-    if receivers_are_3rd_order
-        E = zeros(M, N, num_bins, 16); % E = NxMx16 matrix of transfer functions from each room source to each observer microphone, for 16 SHs
-        F = zeros(M, K, num_bins, 16); % F = KxMx16 matrix of transfer functions from each AAES loudspeaker to each observer microphone, for 16 SHs
+    if receivers_are_4th_order
+        E = zeros(M, N, num_bins, 25); % E = NxMx25 matrix of transfer functions from each room source to each observer microphone, for 25 SHs
+        F = zeros(M, K, num_bins, 25); % F = KxMx25 matrix of transfer functions from each AAES loudspeaker to each observer microphone, for 25 SHs
     else
         E = zeros(M, N, num_bins); % E = NxM matrix of transfer functions from each room source to each observer microphone
         F = zeros(M, K, num_bins); % F = KxM matrix of transfer functions from each AAES loudspeaker to each observer microphone
@@ -43,8 +43,8 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     %% Fill transfer function matrices by reading IR files and performing FFTs
     
     U = FillTransferFunctionMatrix(U, num_bins, "U", rir_directory);
-    E = FillTransferFunctionMatrix(E, num_bins, "E", rir_directory, receivers_are_3rd_order);
-    F = FillTransferFunctionMatrix(F, num_bins, "F", rir_directory, receivers_are_3rd_order);
+    E = FillTransferFunctionMatrix(E, num_bins, "E", rir_directory, receivers_are_4th_order);
+    F = FillTransferFunctionMatrix(F, num_bins, "F", rir_directory, receivers_are_4th_order);
     G = FillTransferFunctionMatrix(G, num_bins, "G", rir_directory);
     H = FillTransferFunctionMatrix(H, num_bins, "H", rir_directory);
     X = FillTransferFunctionMatrix(X, num_bins, "X", reverberator_directory);
@@ -59,8 +59,8 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
 
     num_spherical_harmonics = 1;
 
-    if (receivers_are_3rd_order)
-        num_spherical_harmonics = 16;
+    if (receivers_are_4th_order)
+        num_spherical_harmonics = 25;
     end
 
     disp("Simulating AAES for RIRs in: "+rir_directory+" with reverberator in: "+reverberator_directory+"...");
@@ -78,7 +78,7 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
                 feedback_loop(:,:,bin) = X(:,:,bin) * H(:,:,bin);
             end
             
-            % PlotEigenvalues(feedback_loop, 48000);
+            % PlotEigenvalues(feedback_loop, 48000, false);
 
             if loop_gain_is_relative_to_gbi
                 gbi_dB = FindWorstCaseGBI(feedback_loop);
@@ -112,14 +112,14 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
             end
             
             %% Save output
-            if (~receivers_are_3rd_order)
+            if (~receivers_are_4th_order)
                 audiowrite(output_directory + "ReceiverRIR.wav", output_signal, sample_rate, 'BitsPerSample', bit_depth);
             else
                 third_order_output_signal(:, spherical_harmonic) = output_signal;
             end
         end
 
-        if (receivers_are_3rd_order)
+        if (receivers_are_4th_order)
             audiowrite(output_directory + "ReceiverRIR.wav", third_order_output_signal, sample_rate, 'BitsPerSample', bit_depth);
         end
     end
@@ -129,9 +129,9 @@ end
 
 %% Functions
 
-function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_length, filename_base_id, ir_directory, receivers_are_3rd_order)
-    if ~exist("receivers_are_3rd_order","var")
-        receivers_are_3rd_order = false;
+function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_length, filename_base_id, ir_directory, receivers_are_4th_order)
+    if ~exist("receivers_are_4th_order","var")
+        receivers_are_4th_order = false;
     end
     
     num_rows = size(matrix_to_fill,1);
@@ -140,8 +140,8 @@ function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_
     % Load each IR, zero pad, take FFT and insert into transfer function matrix
     for row = 1:num_rows
         for col = 1:num_cols
-            if receivers_are_3rd_order
-                padded_ir = zeros(desired_ir_length, 16);
+            if receivers_are_4th_order
+                padded_ir = zeros(desired_ir_length, 25);
             else
                 padded_ir = zeros(desired_ir_length, 1);
             end
@@ -150,7 +150,7 @@ function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_
         
             nonzero_length = min(length(raw_ir), desired_ir_length); % Iterate up to the end of the audio, truncating if too long
 
-            if receivers_are_3rd_order
+            if receivers_are_4th_order
                 padded_ir(1:nonzero_length, :) = raw_ir(1:nonzero_length, :);
                 matrix_to_fill(row, col, :, :) = fft(padded_ir);
             else
