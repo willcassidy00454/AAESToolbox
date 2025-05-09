@@ -133,9 +133,15 @@ function matrix_to_fill = FillTransferFunctionMatrix(matrix_to_fill, desired_ir_
     if ~exist("receivers_are_4th_order","var")
         receivers_are_4th_order = false;
     end
-    
+
     num_rows = size(matrix_to_fill,1);
     num_cols = size(matrix_to_fill,2);
+
+    % If the input signal file doesn't exist, use a unit impulse
+    if filename_base_id == "U" && ~isfile(ir_directory)
+        matrix_to_fill(:, :, :) = 1;
+        return
+    end
 
     % Load each IR, zero pad, take FFT and insert into transfer function matrix
     for row = 1:num_rows
