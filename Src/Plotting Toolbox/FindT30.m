@@ -13,6 +13,12 @@ function t30 = FindT30(ir, fs, band_centre, bandwidth_mode)
 
     minus_5_index = find(edc_dB <= -5, 1);
     minus_35_index = find(edc_dB <= -35, 1);
+
+    if isempty(minus_5_index) || isempty(minus_35_index)
+        t30 = 0;
+        return
+    end
+
     sampling_period = 1 / fs;
     minus_5_time = minus_5_index * sampling_period;
     minus_35_time = minus_35_index * sampling_period;
