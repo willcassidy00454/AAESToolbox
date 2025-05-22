@@ -63,30 +63,32 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
         num_spherical_harmonics = 25;
     end
 
+    %% Run simulation
+
     disp("Simulating AAES for RIRs in: "+rir_directory+" with reverberator in: "+reverberator_directory+"...");
+
+    % Isolate feedback loop and find GBI
+
+    feedback_loop = zeros(K, K, num_bins);
+    
+    for bin = 1:num_bins
+        feedback_loop(:,:,bin) = X(:,:,bin) * H(:,:,bin);
+    end
+    
+    % PlotEigenvalues(feedback_loop, 48000, false);
+
+    if loop_gain_is_relative_to_gbi
+        gbi_dB = FindWorstCaseGBI(feedback_loop);
+    else
+        gbi_dB = 0.0;
+    end
 
     for loop_gain_dB = loop_gains_dB
         disp("Loop Gain = " + loop_gain_dB + " dB...");
         for spherical_harmonic = 1:num_spherical_harmonics
             disp("Spherical Harmonic " + spherical_harmonic + "...");
-    
-            %% Isolate feedback loop and find GBI
-    
-            feedback_loop = zeros(K, K, num_bins);
             
-            for bin = 1:num_bins
-                feedback_loop(:,:,bin) = X(:,:,bin) * H(:,:,bin);
-            end
-            
-            % PlotEigenvalues(feedback_loop, 48000, false);
-
-            if loop_gain_is_relative_to_gbi
-                gbi_dB = FindWorstCaseGBI(feedback_loop);
-            else
-                gbi_dB = 0.0;
-            end
-            
-            %% Set loop gain to maximum before instability (minus a bias)
+            %% Set loop gain relative to the gain before instability
             
             % mu = AAES feedback loop gain
             mu = power(10, (gbi_dB + loop_gain_dB) / 20);
