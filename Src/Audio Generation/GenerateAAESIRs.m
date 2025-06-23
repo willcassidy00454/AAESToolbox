@@ -109,12 +109,13 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
             % Convert receiver transfer function back to the time domain
             output_signal = ifft(squeeze(V(1, 1, :)));
     
-            if (should_normalise)
-                output_signal = output_signal / max(abs(output_signal));
-            end
             
             %% Save output
             if (~receivers_are_4th_order)
+                if (should_normalise)
+                    output_signal = output_signal / max(abs(output_signal));
+                end
+
                 audiowrite(output_directory + "ReceiverRIR.wav", output_signal, sample_rate, 'BitsPerSample', bit_depth);
             else
                 third_order_output_signal(:, spherical_harmonic) = output_signal;
@@ -122,6 +123,10 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
         end
 
         if (receivers_are_4th_order)
+            if (should_normalise)
+                third_order_output_signal = third_order_output_signal / max(abs(third_order_output_signal), [], "all");
+            end
+
             audiowrite(output_directory + "ReceiverRIR.wav", third_order_output_signal, sample_rate, 'BitsPerSample', bit_depth);
         end
     end
