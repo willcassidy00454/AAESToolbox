@@ -18,7 +18,7 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
     K = num_aaes_loudspeakers; % Number of AAES loudspeakers
     L = num_aaes_mics; % Number of AAES microphones
 
-    output_length_factor = 1.5; % Length of output IRs as a factor of the src-rec RIR length
+    output_length_factor = 1.5; %2.5 for plots % Length of output IRs as a factor of the src-rec RIR length
 
     [example_ir, sample_rate] = audioread(rir_directory + "E_R1_S1.wav");
     passive_ir_length = size(example_ir, 1); % Use the first IR of the set to determine IR lengths
@@ -118,16 +118,16 @@ function GenerateAAESIRs(rir_directory, reverberator_directory, output_directory
 
                 audiowrite(output_directory + "ReceiverRIR.wav", output_signal, sample_rate, 'BitsPerSample', bit_depth);
             else
-                third_order_output_signal(:, spherical_harmonic) = output_signal;
+                fourth_order_output_signal(:, spherical_harmonic) = output_signal;
             end
         end
 
         if (receivers_are_4th_order)
             if (should_normalise)
-                third_order_output_signal = third_order_output_signal / max(abs(third_order_output_signal), [], "all");
+                fourth_order_output_signal = fourth_order_output_signal / max(abs(fourth_order_output_signal), [], "all");
             end
 
-            audiowrite(output_directory + "ReceiverRIR.wav", third_order_output_signal, sample_rate, 'BitsPerSample', bit_depth);
+            audiowrite(output_directory + "ReceiverRIR.wav", fourth_order_output_signal, sample_rate, 'BitsPerSample', bit_depth);
         end
     end
 
