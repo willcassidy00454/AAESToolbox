@@ -1,9 +1,7 @@
 # AAES Toolbox
 A collection of MATLAB scripts for simulating active acoustic enhancement systems.
 
-NOTE: If you're coming here from our 2024 DAFx paper, look at commit 15db85f (28 Oct 2024). Since then, the quantity notation and file naming has changed (corresponding paper coming soon).
-
-Requires AKtools available from https://github.com/f-brinkmann/AKtools
+Requires AKtools available from https://github.com/f-brinkmann/AKtools (not necessary if you already have an RIR dataset)
 
 ## ```AAESSimulator.m```
 
