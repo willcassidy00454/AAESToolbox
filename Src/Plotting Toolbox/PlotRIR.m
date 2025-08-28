@@ -455,15 +455,15 @@ function PlotMatrixDRR(read_dir, matrix_prefix, num_rows, num_cols, plot_title, 
     title(plot_title);
 end
 
-function PlotRTOverFrequency(ir, fs, bandwidth_mode)
+function PlotRTOverFrequency(ir, fs, bandwidth_mode, y_limit_sec)
     if bandwidth_mode == "1 octave"
-        num_bands = 4;    
+        num_bands = 10;    
     elseif bandwidth_mode == "1/3 octave"
-        num_bands = 8;
+        num_bands = 30;
     elseif bandwidth_mode == "1/6 octave"
-        num_bands = 12;
+        num_bands = 60;
     elseif bandwidth_mode == "1/12 octave"
-        num_bands = 24;
+        num_bands = 120;
     end
 
     band_centres = 2 * logspace(1, 4, num_bands);

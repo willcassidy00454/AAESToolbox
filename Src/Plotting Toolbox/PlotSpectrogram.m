@@ -28,7 +28,7 @@ function PlotSpectrogram(ir,sample_rate,x_limit,should_normalise)
     pspectrum(ir,sample_rate,"spectrogram","FrequencyLimits",[20 20000],"OverlapPercent",90,"FrequencyResolution",100,"MinThreshold",min_threshold);
     % set(gcf,'position',[600, 400, 500, 400]);
     xlabel("Time (s)");
-    ylabel("Frequency / Hz");
+    ylabel("Frequency (Hz)");
     clim([min_threshold, 0]);
 
     set(gca,'Yscale','log');
