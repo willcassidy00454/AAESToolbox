@@ -18,7 +18,7 @@ function gbi_dB = FindWorstCaseGBI(A)
     
     % num_bins / 2 used to discard symmetry
     for bin = 1:round(num_bins/2)
-        all_channel_eigenvalues(bin) = max(abs(eig(A(:,:,bin))), [], "all");
+        all_channel_eigenvalues(bin) = max(real(eig(A(:,:,bin))), [], "all");
     end
 
     % figure
