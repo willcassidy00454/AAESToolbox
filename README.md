@@ -6,6 +6,8 @@ Requires AKtools available from https://github.com/f-brinkmann/AKtools (not nece
 ## Review Paper Simulations Branch
 The branch ```review-simulations``` provides scripts and audio examples to recreate the simulations from the paper "Active Acoustic Enhancement Systems - A Review and Simulations" (link to follow).
 
+Requires my fork of AKtools to handle cardioid sources/receivers (https://github.com/willcassidy00454/AKtools-FreqIndepSH).
+
 ## ```AAESSimulator.m```
 
 This script allows the user to simulate multiple AAESs iteratively given existing impulse response data. These data can either be measured from real AAES installations, or simulated using ```AutomatedRIRGenerator.m```.
