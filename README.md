@@ -3,7 +3,7 @@ A collection of MATLAB scripts for simulating active acoustic enhancement system
 
 Requires AKtools available from https://github.com/f-brinkmann/AKtools (not necessary if you already have an RIR dataset)
 
-# Review Paper Simulations Branch
+## Review Paper Simulations Branch
 The branch ```review-simulations``` provides scripts and audio examples to recreate the simulations from the paper "Active Acoustic Enhancement Systems - A Review and Simulations" (link to follow).
 
 ## ```AAESSimulator.m```
